@@ -781,51 +781,72 @@ def make_name_link(state: State, referrer_path: List[str], name) -> str:
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
-_pybind_default_value_rx = re.compile('[^,)]+')
 
-def parse_pybind_type(state: State, referrer_path: List[str], signature: str) -> str:
-    # If this doesn't match, it's because we're in Callable[[arg, ...], retval]
+
+def _pybind11_default_argument_length(string):
+    """Returns length of balanced []()-expression at begin of input string until `,` or `)`"""
+    stack = []
+    for i, c in enumerate(string):
+        if len(stack) == 0 and (c == ',' or c == ')'):
+            return i
+        if c == '(':
+            stack.append(')')
+        elif c == '[':
+            stack.append(']')
+        elif c == ')' or c == ']':
+            if c != stack.pop():
+                raise SyntaxError("Unmatched {} at pos {} in `{}`".format(c, i, string))
+    raise SyntaxError("Unexpected end of `{}`".format(string))
+
+
+def map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
+    if input_type in ['Callable', 'Dict', 'Iterator', 'Iterable', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+        return 'typing.' + input_type
+    else:
+        return map_name_prefix(state, input_type)
+
+
+def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
     match = _pybind_type_rx.match(signature)
     if match:
         input_type = match.group(0)
         signature = signature[len(input_type):]
-        # Prefix types with the typing module to be consistent with pure
-        # Python annotations and allow them to be linked to
-        if input_type in ['Callable', 'Dict', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
-            type = 'typing.' + input_type
-            type_link = make_name_link(state, referrer_path, type)
-        else:
-            type = map_name_prefix(state, input_type)
-            type_link = make_name_link(state, referrer_path, type)
+        type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        type_link = make_name_link(state, referrer_path, type)
     else:
-        assert signature[0] == '['
-        type = ''
-        type_link = ''
+        raise SyntaxError()
 
-    # This is a generic type (or the list in Callable)
-    if signature and signature[0] == '[':
-        type += '['
-        type_link += '['
-        signature = signature[1:]
-        while signature[0] != ']':
-            signature, inner_type, inner_type_link = parse_pybind_type(state, referrer_path, signature)
-            type += inner_type
-            type_link += inner_type_link
-
-            if signature[0] == ']': break
-
-            # Expecting the next item now, if not there, we failed
-            if not signature.startswith(', '): raise SyntaxError()
-            signature = signature[2:]
-
-            type += ', '
-            type_link += ', '
-
-        assert signature[0] == ']'
-        signature = signature[1:]
-        type += ']'
-        type_link += ']'
-
+    lvl = 0
+    i = 0
+    while i < len(signature):
+        c = signature[i]
+        if c == '[':
+            i += 1
+            lvl += 1
+            type += c
+            type_link += c
+            continue
+        if lvl == 0:
+            break
+        if c == ']':
+            i += 1
+            lvl -= 1
+            type += c
+            type_link += c
+            continue
+        if c in ', ':
+            i += 1
+            type += c
+            type_link += c
+            continue
+        match = _pybind_type_rx.match(signature[i:])
+        input_type = match.group(0)
+        i += len(input_type)
+        input_type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        type += input_type
+        type_link += make_name_link(state, referrer_path, input_type)
+    assert lvl == 0
+    signature = signature[i:]
     return signature, type, type_link
 
 # Returns function name, summary, list of arguments (name, type, type with HTML
@@ -857,14 +878,14 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
                 arg_type = None
                 arg_type_link = None
 
-            # Default (optional) -- for now take everything until the next comma
-            # TODO: ugh, do properly
+            # Default (optional)
             # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
             # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
             if signature.startswith(('=', ' = ')):
                 signature = signature[1 if signature[0] == '=' else 3:]
-                default = _pybind_default_value_rx.match(signature).group(0)
-                signature = signature[len(default):]
+                default_length = _pybind11_default_argument_length(signature)
+                default = signature[:default_length]
+                signature = signature[default_length:]
             else:
                 default = None
 
