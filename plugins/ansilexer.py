@@ -219,7 +219,6 @@ class AnsiLexer(RegexLexer):
             yield (match.start(), Text, text)
         else:
             yield (match.start(), string_to_tokentype(token), text)
-        return
 
     def _read_rgb(self, parameters):
         r = parameters.pop(0)
