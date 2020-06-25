@@ -18,17 +18,42 @@ m.code
 
 .. code:: c++
     :class: m-inverted
+    :hl-lines: 2
+
+    int main() {
+        return 1;
+    }
+
+Legacy :rst:`:hl_lines:` option should work the same:
+
+.. code:: c++
+    :class: m-inverted
     :hl_lines: 2
 
     int main() {
         return 1;
     }
 
+Same as above, but for a :rst:`.. include::`, which should also support line
+highlighting:
+
+.. include:: code.cpp
+    :code: c++
+    :class: m-inverted
+    :hl-lines: 2
+
 Inline code is here: :cpp:`constexpr`. Code without a language should be
 rendered as plain monospace text: :code:`code`.
 
 .. include:: console.ansi
     :code: ansi
+
+Syntax highlighting:
+
+.. code:: py
+
+    # Comment
+    var = "string{}escape\n"
 
 Console colors:
 

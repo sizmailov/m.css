@@ -29,6 +29,15 @@
 <pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 <span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class="p">}</span></pre>
+<p>Legacy <code class="m-code"><span class="nc">:hl_lines:</span></code> option should work the same:</p>
+<pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class="p">}</span></pre>
+<p>Same as above, but for a <code class="m-code"><span class="p">..</span> <span class="ow">include</span><span class="p">::</span></code>, which should also support line
+highlighting:</p>
+<pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class="p">}</span></pre>
 <p>Inline code is here: <code class="cpp m-code"><span class="k">constexpr</span></code>. Code without a language should be
 rendered as plain monospace text: <code>code</code>.</p>
 <pre class="m-console">!<span class="g g-AnsiBlue">[</span><span class="g g-AnsiBrightWhite">mosra@don-perverzo </span><span class="g g-AnsiWhite">m.css</span><span class="g g-AnsiBlue">]</span><span class="g g-AnsiBrightCyan">$ </span>ls
@@ -38,6 +47,9 @@ COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span cla
 ASan reports:
 
 =&gt;0x0c287fff8030: 00[<span class="g g-AnsiBrightBlue">fc</span>]<span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightBlue">fc</span> <span class="g g-AnsiBrightRed">fa</span> <span class="g g-AnsiBrightRed">fa</span> <span class="g g-AnsiBrightRed">fa</span> <span class="g g-AnsiBrightRed">fa</span> <span class="g g-AnsiBrightRed">fa</span></pre>
+<p>Syntax highlighting:</p>
+<pre class="m-code"><span class="c1"># Comment</span>
+<span class="n">var</span> <span class="o">=</span> <span class="s2">&quot;string</span><span class="si">{}</span><span class="s2">escape</span><span class="se">\n</span><span class="s2">&quot;</span></pre>
 <p>Console colors:</p>
 <pre class="m-console"><span class="g g-AnsiBrightDefault">Named foreground colors:</span>
   <span class="g g-AnsiBlack">Black </span><span class="g g-AnsiRed">Red </span><span class="g g-AnsiGreen">Green </span><span class="g g-AnsiYellow">Yellow </span><span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiMagenta">Magenta </span><span class="g g-AnsiCyan">Cyan </span><span class="g g-AnsiWhite">White </span>Default

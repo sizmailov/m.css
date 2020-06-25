@@ -330,7 +330,7 @@ replaces `Pelican code-block directive <https://docs.getpelican.com/en/stable/co
 -   Adds a :rst:`:filters:` option. See `Filters`_ below.
 
 Put `code blocks <{filename}/css/components.rst#code>`_ into the :rst:`.. code::`
-directive and specify the language via a parameter. Use :rst:`:hl_lines:`
+directive and specify the language via a parameter. Use :rst:`:hl-lines:`
 option to highlight lines; if you want to add additional CSS classes, use the
 :rst:`:class:` option.
 
@@ -345,7 +345,7 @@ option to highlight lines; if you want to add additional CSS classes, use the
     .. code:: rst
 
         .. code:: c++
-            :hl_lines: 4 5
+            :hl-lines: 4 5
             :class: m-inverted
 
             #include <iostream>
@@ -356,7 +356,7 @@ option to highlight lines; if you want to add additional CSS classes, use the
             }
 
     .. code:: c++
-        :hl_lines: 4 5
+        :hl-lines: 4 5
         :class: m-inverted
 
         #include <iostream>
@@ -371,6 +371,8 @@ is also patched to use the improved code directive, and:
 
 -   Drops the rarely useful :rst:`:encoding:`, :rst:`:literal:` and
     :rst:`:name:` options
+-   Adds a :rst:`:hl-lines:` option to have the same behavior as
+    the :rst:`.. code::` directive
 -   Adds a :rst:`:start-on:` and :rst:`:strip-prefix:` options, and improves
     :rst:`:end-before:`. See `Advanced file inclusion`_ below.
 
