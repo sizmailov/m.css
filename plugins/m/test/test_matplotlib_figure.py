@@ -16,3 +16,4 @@ class MatplotlibFigure(PelicanPluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
+        self.assertEqual(*self.actual_expected_contents('deeply/burried/page/page-copy.html'))
