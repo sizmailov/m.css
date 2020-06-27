@@ -44,6 +44,31 @@ class Page(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('error.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
+
+class Nested(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'INPUT_PAGES': [
+                'index.rst',
+                'examples/index.rst',
+                'examples/foo.rst',
+                'examples/bar.rst',
+                'examples/advanced/index.rst',
+                'examples/advanced/fooz.rst',
+                'examples/advanced/barz.rst',
+            ],
+            'PLUGINS': [
+                'm.sphinx'
+            ]
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/foo.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/bar.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/fooz.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/barz.html'))
+
 class InputSubdir(BaseTestCase):
     def test(self):
         self.run_python({
