@@ -1898,6 +1898,10 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
         if isinstance(path, str):
             if urllib.parse.urlparse(path).netloc:
                 return path
+            if '/' in path:
+                if path in state.name_map:
+                    return state.name_map[path]
+                return path
             path = [path]
         entry = state.name_map['.'.join(path)]
         return site_root + entry.url  # TODO: url shortening can be applied
@@ -2322,7 +2326,7 @@ def render_page(state: State, path, input_filename, env):
         hook(type=EntryType.PAGE, path=path)
 
     # Render the file
-    with open(input_filename, 'r') as f:
+    with open(input_filename, 'r', encoding='utf-8') as f:
         try:
             pub = publish_rst(state, f.read(), source_path=input_filename, subdir_level=url.count('/'))
         except docutils.utils.SystemMessage:
